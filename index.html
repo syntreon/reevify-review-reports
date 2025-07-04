@@ -312,6 +312,41 @@
             }
         }
         
+        /* CTA Section */
+        .cta-section {
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: clamp(3rem, 6vw, 5rem) 1rem;
+            border-bottom: none;
+            margin-top: 2rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+            border-radius: 4px;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(60, 131, 255, 0.2);
+        }
+        .cta-button:hover {
+            background-color: #2a6edf; /* Slightly darker accent color */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(60, 131, 255, 0.3);
+        }
+        .cta-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(60, 131, 255, 0.2);
+        }
+        .cta-subtext {
+            margin-top: 1rem;
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+            color: #666;
+        }
+        
         /* Print styles */
         @media print {
             body {
@@ -326,6 +361,9 @@
             }
             .timing-table {
                 display: table;
+            }
+            .cta-section {
+                display: none; /* Hide CTA when printing */
             }
         }
     </style>
@@ -538,6 +576,17 @@ The [Your Company Name] Team</code>
                 </div>
             </div>
 
+        </section>
+        
+        <!-- CTA Section -->
+        <section id="cta" class="cta-section">
+            <div class="container">
+                <h3>Ready to turn your reviews into growth engine?</h3>
+                <a href="https://reevify.com/" class="cta-button">
+                    Try Reevify for Free
+                </a>
+                <p class="cta-subtext">No credit card needed.</p>
+            </div>
         </section>
         
     </main>
