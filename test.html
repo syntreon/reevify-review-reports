@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Review Analysis Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fafafa;
+        }
+        
+        .report-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .intro {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 0 0 30px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        
+        .business-overview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .business-overview ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .business-overview li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .business-overview li:last-child {
+            border-bottom: none;
+        }
+        
+        .rating-summary {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .rating-large {
+            font-size: 36px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .rating-details {
+            flex: 1;
+        }
+        
+        .highlights {
+            background: #e8f5e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .highlights h3 {
+            color: #27ae60;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .pain-points {
+            background: #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .pain-points h3 {
+            color: #e17055;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .quotes {
+            background: #f1f2f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .quote-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+        }
+        
+        .quote-positive {
+            border-left-color: #27ae60;
+        }
+        
+        .quote-negative {
+            border-left-color: #e17055;
+        }
+        
+        .suggestions {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .suggestions h3 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .suggestion-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .suggestion-item strong {
+            color: #1976d2;
+        }
+        
+        .closing {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0 0 0;
+            text-align: center;
+        }
+        
+        .closing h3 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .rating-summary {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .rating-large {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="header">
+            <h1>Kizhakkan Thattukada — Customer Review Analysis</h1>
+            <p>Comprehensive Analysis Report (as of 07/03/2025)</p>
+        </div>
+        
+        <div class="content">
+            <div class="intro">
+                Thank you for trusting us with your customer feedback. Below is a clear summary of what diners are saying about Kizhakkan Thattukada on Google Maps, highlighting strengths to build on and areas that could use attention to improve the overall guest experience.
+            </div>
+            
+            <div class="section">
+                <h2>🏪 Business Overview</h2>
+                <div class="business-overview">
+                    <ul>
+                        <li><strong>Type:</strong> South Indian Restaurant</li>
+                        <li><strong>Location:</strong> 1016 Oxford St E, London, ON N5Y 3K7, Canada</li>
+                        <li><strong>Contact:</strong> +1 548-690-9100 | <a href="https://kizhakkanthattukada.cbest.ca/">Website</a></li>
+                        <li><strong>Total Reviews Analyzed:</strong> 800 on Google Maps</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>⭐ Summary of Sentiment & Rating</h2>
+                <div class="rating-summary">
+                    <div class="rating-large">4.2</div>
+                    <div class="rating-details">
+                        <div><strong>Average Rating:</strong> 4.2 out of 5 stars</div>
+                        <div><strong>Sentiment:</strong> Mixed – positive feedback centers on authentic flavors and atmosphere, while negatives focus mostly on portion size and inconsistent service</div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">566</div>
+                        <div class="stat-label">5-Star Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">98</div>
+                        <div class="stat-label">1-Star Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">800</div>
+                        <div class="stat-label">Total Reviews</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>✨ What People Love</h2>
+                <div class="highlights">
+                    <h3>Highlights</h3>
+                    <ul>
+                        <li>Authentic and flavorful South Indian dishes</li>
+                        <li>Many customers praise generous portion sizes</li>
+                        <li>Calm, pleasant atmosphere enhancing dining experience</li>
+                        <li>Friendly, attentive customer service reported by several reviewers</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>⚠️ Areas for Improvement</h2>
+                <div class="pain-points">
+                    <h3>Pain Points</h3>
+                    <ul>
+                        <li>Portion sizes perceived as inconsistent—some feel portions are smaller than expected, especially relative to price</li>
+                        <li>Customer service issues surfaced, including reports of unresponsiveness and even hung-up calls</li>
+                        <li>Concerns about value for money and pricing transparency</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>💬 Customer Voice</h2>
+                <div class="quotes">
+                    <div class="quote-item quote-positive">
+                        "Food was flavorful and satisfying."
+                    </div>
+                    <div class="quote-item quote-positive">
+                        "Restocked portions and authentic taste."
+                    </div>
+                    <div class="quote-item quote-positive">
+                        "Customer service was friendly and attentive."
+                    </div>
+                    <div class="quote-item quote-negative">
+                        Reported negatives include dissatisfaction with portion size and occasional poor service experiences.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📊 Themes & Patterns</h2>
+                <ul>
+                    <li><strong>Food Quality:</strong> Consistently praised for authentic taste and satisfying flavors</li>
+                    <li><strong>Portion Size:</strong> Some inconsistency reported; while many feel portions are generous, others express disappointment</li>
+                    <li><strong>Service:</strong> Mixed reviews—some find staff attentive, others experience lapses in responsiveness</li>
+                    <li><strong>Value for Money:</strong> Linked to portion size and pricing concerns; impacts overall satisfaction</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>📈 Trends Over Time</h2>
+                <ul>
+                    <li>Customer service problems continue to impact overall experience and ratings</li>
+                    <li>Portion size issues remain a recurring theme across recent reviews</li>
+                    <li>Positive remarks about food flavors consistently help offset some service-related negatives</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>💡 Smart Suggestions</h2>
+                <div class="suggestions">
+                    <h3>Backed by Reviews</h3>
+                    <div class="suggestion-item">
+                        <strong>Ensure Consistency in Portion Sizes:</strong> Standardize serving sizes to align customer expectations with value
+                    </div>
+                    <div class="suggestion-item">
+                        <strong>Improve Customer Service Responsiveness:</strong> Train staff in handling calls and guest interactions promptly and courteously
+                    </div>
+                    <div class="suggestion-item">
+                        <strong>Address Pricing Transparently:</strong> Clearly communicate pricing and portion details to reduce value-related complaints
+                    </div>
+                    <div class="suggestion-item">
+                        <strong>Staff Training:</strong> Focus on delivering a uniformly friendly and professional service experience for every guest
+                    </div>
+                </div>
+            </div>
+            
+            <div class="closing">
+                <h3>🎯 Closing Note</h3>
+                <p>Kizhakkan Thattukada has strong foundations with authentic, delicious food and a welcoming atmosphere that customers appreciate. Addressing the concerns around portion consistency, service quality, and value perception will help convert more visitors into loyal patrons and enhance your overall star rating. We're here to support your path to even better guest satisfaction and business growth.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

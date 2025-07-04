@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Review Economy: A Data-Driven Playbook</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #3d4b56;
+            --accent-color: #3c83ff;
+            --heading-color: #000000;
+            --font-main: 'Helvetica Neue', Arial, sans-serif;
+        }
+        /* Base styles */
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px; /* Base font size for rem calculations */
+            box-sizing: border-box;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        img, canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        /* Typography responsive scaling */
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            line-height: 1.2;
+        }
+        /* Header styles */
+        header {
+            text-align: center;
+            padding: 3rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); /* Responsive font size */
+            color: var(--heading-color);
+            margin: 0;
+        }
+        header h2 {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            color: var(--accent-color);
+            margin: 0.5rem 0 0;
+            font-weight: normal;
+        }
+        header p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            max-width: 800px;
+            margin: 1.25rem auto 0;
+            padding: 0 1rem;
+        }
+        /* Section styles */
+        section {
+            padding: 4rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        h3 {
+            font-size: clamp(1.75rem, 4vw, 2.8rem);
+            color: var(--heading-color);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        /* Grid layouts */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: clamp(1rem, 3vw, 2.5rem);
+            align-items: center;
+        }
+        .grid-item {
+            background-color: #f9f9f9;
+            padding: clamp(1.25rem, 3vw, 1.875rem);
+            border-radius: 8px;
+            text-align: center;
+            height: 100%; /* Equal height grid items */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .grid-item-title {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--accent-color);
+            margin-bottom: 0.9375rem;
+        }
+        .grid-item-stat {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: bold;
+            color: var(--heading-color);
+        }
+        .grid-item-desc {
+            font-size: clamp(0.875rem, 1.5vw, 1rem);
+            margin-top: 0.625rem;
+        }
+        /* Canvas container for charts */
+        .canvas-container {
+            width: 100%;
+            margin: 2.5rem auto;
+            text-align: center;
+            overflow-x: auto; /* Allow horizontal scroll for charts if needed */
+        }
+        .canvas-container h4 {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            margin-bottom: 1.25rem;
+        }
+        .canvas-container canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Checklist grid */
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: clamp(1rem, 2vw, 1.25rem);
+            margin-top: 2.5rem;
+        }
+        .checklist-item {
+            background-color: #f9f9f9;
+            padding: clamp(1rem, 3vw, 1.5625rem);
+            border-left: 5px solid var(--accent-color);
+            height: 100%; /* Equal height items */
+        }
+        .checklist-item h4 {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--heading-color);
+            margin: 0 0 0.625rem 0;
+        }
+        .checklist-item p {
+            margin: 0;
+            font-size: clamp(0.875rem, 1.5vw, 0.95rem);
+        }
+        /* Split sections */
+        .split-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(1.5rem, 4vw, 2.5rem);
+            align-items: center;
+        }
+        .split-section > div {
+            flex: 1 1 300px; /* Minimum width before wrapping */
+        }
+        .split-section-text h4 {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            color: var(--accent-color);
+            margin-bottom: 1.25rem;
+        }
+        /* Tables */
+        .timing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2.5rem;
+            overflow-x: auto;
+            display: block; /* Make table scrollable on small screens */
+        }
+        .timing-table th, .timing-table td {
+            padding: clamp(0.625rem, 2vw, 0.9375rem);
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            min-width: 120px; /* Prevent columns from getting too narrow */
+        }
+        .timing-table th {
+            background-color: #f4f4f4;
+            color: var(--heading-color);
+            font-size: clamp(0.9375rem, 1.5vw, 1.1rem);
+            position: sticky;
+            top: 0; /* Sticky headers for scrollable tables */
+        }
+        .timing-table td:first-child {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+        /* Script sections */
+        .script-section {
+            margin-top: 1.875rem;
+            background: #f9f9f9;
+            padding: clamp(1rem, 2vw, 1.25rem);
+            border-radius: 8px;
+            border: 1px solid #eee;
+            position: relative; /* For positioning the copy button */
+        }
+        .script-section h5 {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--accent-color);
+            margin: 0 0 0.625rem 0;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.625rem;
+            display: inline-block;
+        }
+        .script-section code {
+            display: block;
+            white-space: pre-wrap;
+            background-color: var(--bg-color);
+            padding: clamp(0.75rem, 2vw, 0.9375rem);
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: clamp(0.8125rem, 1.5vw, 0.9rem);
+            color: var(--text-color);
+            overflow-x: auto; /* Allow horizontal scroll for code */
+        }
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .copy-btn:hover {
+            background-color: #2a6edf; /* Slightly darker accent color */
+        }
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+        .copy-btn.copied {
+            background-color: #4CAF50; /* Green for success */
+        }
+        /* Icon for copy button */
+        .copy-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        /* Responsive adjustments for copy button */
+        @media (max-width: 480px) {
+            .copy-btn {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: clamp(1.5rem, 3vw, 2.5rem) 1rem;
+            background-color: #f9f9f9;
+            margin-top: 3.75rem;
+        }
+        
+        /* Responsive breakpoints */
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            body {
+                font-size: 1rem; /* 16px */
+            }
+            .container {
+                padding: 1.5rem 0.75rem;
+            }
+            section {
+                padding: 3rem 0.75rem;
+            }
+            h3 {
+                margin-bottom: 2rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .script-section code {
+                font-size: 0.8125rem;
+            }
+        }
+        
+        /* Small devices */
+        @media (max-width: 768px) {
+            .split-section {
+                flex-direction: column;
+            }
+            .split-section > div {
+                flex: 1 1 100%;
+            }
+            .checklist-grid {
+                grid-template-columns: 1fr;
+            }
+            section p[style*="text-align:center"] {
+                margin: -1.5rem auto 2rem auto !important;
+            }
+        }
+        
+        /* Medium devices */
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            canvas {
+                page-break-inside: avoid;
+            }
+            .timing-table {
+                display: table;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>The Review Economy</h1>
+            <h2>A Data-Driven Playbook for Growth</h2>
+            <p>An interactive guide to transforming customer feedback into your most powerful growth engine. Online reviews are the single most powerful driver of consumer trust and market visibility.  This playbook decodes the why, when, and how of building a 5-star reputation.</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section id="case">
+            <h3>The New Digital Curb Appeal</h3>
+            <p style="text-align:center; max-width: 800px; margin: -40px auto 60px auto;">Before a customer ever visits your website, they have already formed a powerful judgment based on the public feedback of others.  Your review profile is your business's first impression.</p>
+            <div class="grid">
+                <div class="grid-item">
+                    <div class="grid-item-stat">95%</div>
+                    <p class="grid-item-desc">Of customers check product reviews when shopping online. </p>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-stat">50%</div>
+                    <p class="grid-item-desc">Of consumers trust online reviews as much as personal recommendations. </p>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-stat">81%</div>
+                    <p class="grid-item-desc">Of consumers use Google to read reviews, making it the epicenter of the review economy. </p>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <h4>Anatomy of a Trustworthy Profile </h4>
+                <canvas id="trustworthyProfileChart" width="1160" height="400"></canvas>
+            </div>
+            
+            <div class="split-section">
+                <div class="split-section-text">
+                    <h4>From Clicks to Conversions</h4>
+                    <p>A strong review profile is a direct and quantifiable driver of revenue.  The presence of just five reviews can increase a product's purchase probability by <strong>270%</strong> compared to a product with none.  For higher-priced items, this uplift is an astonishing <strong>380%</strong>. </p>
+                    <p>Furthermore, businesses that reply to at least 25% of their reviews average <strong>35% more revenue</strong> than their silent competitors. </p>
+                </div>
+                <div class="split-section-canvas">
+                    <canvas id="conversionUpliftChart" width="500" height="400"></canvas>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px;">
+                <h4>The "Too Good to Be True" Phenomenon </h4>
+                <p>Authenticity trumps perfection. Purchase likelihood actually peaks when a product's rating is between <strong>4.0 and 4.7 stars</strong>.  A flawless 5.0 can breed suspicion. 95% of consumers suspect fake reviews if no negative scores are present. </p>
+            </div>
+        </section>
+        
+        <hr>
+
+        <section id="psychology">
+            <h3>The Psychology of Influence</h3>
+            <div class="split-section">
+                <div>
+                    <h4>Social Proof: The Wisdom of the Crowd </h4>
+                    <p>The entire review economy is built on social proof: our innate tendency to look to others to determine our own actions.  When uncertain, we assume the crowd knows best. A high volume of positive reviews signals that a purchase is a safe and correct decision. </p>
+                    <h4>The Reciprocity Loop </h4>
+                    <p>This powerful social norm compels us to repay kindness.  When a business provides exceptional service (the "first gift"), customers feel a subconscious need to reciprocate. A review request at this moment becomes a welcome opportunity to give back, not an imposition. </p>
+                </div>
+                <div>
+                    <canvas id="psychologyChart" width="500" height="400"></canvas>
+                </div>
+            </div>
+
+             <div style="margin-top: 60px;">
+                <h4 style="text-align:center;">Top Motivations for Writing Reviews </h4>
+                 <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <h4>Altruism (67%)</h4>
+                        <p>A desire to help and guide other consumers in their decision-making process. </p>
+                    </div>
+                    <div class="checklist-item">
+                        <h4>Emotional Expression</h4>
+                        <p>A catalyst for sharing very positive or very negative experiences. </p>
+                    </div>
+                     <div class="checklist-item">
+                        <h4>Ego & Self-Enhancement</h4>
+                        <p>Showcasing expertise and demonstrating knowledge about a product or service. </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="timing">
+            <h3>The Art of the Ask: Timing is Everything</h3>
+            <p style="text-align:center; max-width: 800px; margin: -40px auto 60px auto;">The single most important principle is to align the review request with a "happy moment" in the customer journey, when positive feelings are at their peak. </p>
+            
+            <h4 style="text-align:center;">Optimal Review Request Timing by Industry </h4>
+            <table class="timing-table">
+                <thead>
+                    <tr>
+                        <th>Industry / Product Type</th>
+                        <th>Recommended Timing</th>
+                        <th>Rationale (Time-to-Value)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Food & Drink</td>
+                        <td>Within 1-2 days</td>
+                        <td>The experience is immediate and sensory memory fades quickly. </td>
+                    </tr>
+                    <tr>
+                        <td>Fashion / Apparel</td>
+                        <td>2-7 days post-delivery</td>
+                        <td>Allows time to try on items; emotional impact of fit and style is high. </td>
+                    </tr>
+                    <tr>
+                        <td>Electronics</td>
+                        <td>7-10 days post-delivery</td>
+                        <td>Sufficient time for unboxing, setup, and initial feature exploration. </td>
+                    </tr>
+                    <tr>
+                        <td>Skincare & Cosmetics</td>
+                        <td>14-21 days post-delivery</td>
+                        <td>Value is derived from results, which are not immediate. </td>
+                    </tr>
+                    <tr>
+                        <td>Home & Professional Services</td>
+                        <td>1-3 days after service</td>
+                        <td>Satisfaction is at its peak immediately after a job is well done. </td>
+                    </tr>
+                     <tr>
+                        <td>SaaS / Software</td>
+                        <td>After key engagement milestones</td>
+                        <td>Value is tied to feature adoption and achieving a specific user goal. </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <hr>
+
+        <section id="playbook">
+            <h3>The Reevify Playbook: Scripts & Templates</h3>
+             <p style="text-align:center; max-width: 800px; margin: -40px auto 60px auto;">Effective requests are personal, simple, and remove all friction.  Always explain why feedback matters and include a direct, single-click link to the review platform. </p>
+            
+            <div class="script-section">
+                <h5>Template: The "Help Others" Ask (Email) </h5>
+                <button class="copy-btn" onclick="copyToClipboard(this, 'email-template')"><span class="copy-icon"></span> Copy</button>
+                <code id="email-template"><strong>Subject:</strong> Your experience could help someone just like you! 
+
+Hello [Customer Name],
+Thank you for choosing [Your Company Name]. Many people rely on reviews from others to make sure they find a solution they can trust. 
+Your experience and insights are incredibly valuable to others. If you have a moment, would you be willing to share your story on our Google page? Your feedback can make a real difference. 
+Best,
+The [Your Company Name] Team</code>
+            </div>
+
+            <div class="script-section">
+                <h5>Template: The Quick Star Rating (SMS) </h5>
+                <button class="copy-btn" onclick="copyToClipboard(this, 'sms-template')"><span class="copy-icon"></span> Copy</button>
+                <code id="sms-template">Hi [Customer Name]! How many stars did we earn today? ⭐ Let us know with a quick review: [Link]. It means the world to us! Reply STOP to opt out. </code>
+            </div>
+            
+            <div class="script-section">
+                <h5>Tactic: The "You've Already Reviewed Us" (In-Person) </h5>
+                <button class="copy-btn" onclick="copyToClipboard(this, 'inperson-template')"><span class="copy-icon"></span> Copy</button>
+                 <p style="padding-bottom:10px;">When a customer gives spontaneous verbal praise, like "Your technician Alex was amazing," reframe the task.</p>
+                <code id="inperson-template"><strong>Staff Script:</strong> "Thank you so much for saying that! You know, what you just said is the perfect review. Would you be willing to share that in a quick online post? It would mean the world to our team." </code>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="reputation">
+            <h3>Beyond the Ask: Cultivating a 5-Star Reputation</h3>
+             <p style="text-align:center; max-width: 800px; margin: -40px auto 60px auto;">Generating reviews is the start. Responding to them—both positive and negative—closes the loop and demonstrates to all potential customers that you are listening and engaged. </p>
+            
+            <div class="split-section">
+                <div class="split-section-canvas">
+                     <canvas id="responseImpactChart" width="500" height="400"></canvas>
+                </div>
+                <div class="split-section-text">
+                    <h4>The Power of a Reply</h4>
+                    <p>An overwhelming <strong>88% of consumers</strong> are more likely to use a business if they see owners responding to all reviews.  Conversely, 57% are unlikely to use a business that doesn't respond at all. </p>
+                    <p>Speed is critical. Responding to a 1 or 2-star review within 24 hours creates a <strong>33% higher probability</strong> that the reviewer will return and upgrade their rating. </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 60px;">
+                <h4 style="text-align:center;">Framework for Responding to Negative Reviews </h4>
+                 <div class="checklist-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+                    <div class="checklist-item">
+                        <h4>1. Acknowledge & Thank</h4>
+                        <p>"Thank you for taking the time to bring this to our attention." </p>
+                    </div>
+                    <div class="checklist-item">
+                        <h4>2. Apologize & Empathize</h4>
+                        <p>"We are so sorry to hear that your experience did not meet your expectations." </p>
+                    </div>
+                     <div class="checklist-item">
+                        <h4>3. Take Responsibility</h4>
+                        <p>"This is certainly not the level of service we strive to provide." </p>
+                    </div>
+                     <div class="checklist-item">
+                        <h4>4. Take it Offline</h4>
+                        <p>"Our manager, [Name], would like to connect with you directly to make this right. Please email them at [email]." </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Mastering the art and science of the review economy is the definitive path to building trust, driving growth, and securing a competitive advantage. </p>
+            <p style="font-size: 0.9em; color: #777;">Infographic based on "The Review Economy: A Data-Driven Playbook for Growth in 2025 and Beyond" by Reevify.</p>
+        </div>
+    </footer>
+
+<script>
+// Copy to clipboard functionality
+function copyToClipboard(button, elementId) {
+    // Get the text content from the element
+    const element = document.getElementById(elementId);
+    const text = element.textContent;
+    
+    // Create a temporary textarea element to copy from
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    
+    // Select and copy the text
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Remove the temporary element
+    document.body.removeChild(textarea);
+    
+    // Visual feedback
+    const originalText = button.innerHTML;
+    button.innerHTML = '<span class="copy-icon"></span> Copied!';
+    button.classList.add('copied');
+    
+    // Reset button after 2 seconds
+    setTimeout(function() {
+        button.innerHTML = originalText;
+        button.classList.remove('copied');
+    }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const colors = {
+        bg: '#ffffff',
+        text: '#3d4b56',
+        accent: '#3c83ff',
+        heading: '#000000'
+    };
+
+    function drawBarChart(ctx, data, options) {
+        const { width, height, barWidth, gap, labelMargin } = options;
+        const maxVal = Math.max(...data.map(d => d.value));
+        const scale = (height - labelMargin * 2) / maxVal;
+
+        ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+        ctx.fillStyle = colors.text;
+        ctx.textAlign = 'center';
+
+        data.forEach((item, i) => {
+            const barHeight = item.value * scale;
+            const x = (barWidth + gap) * i + gap;
+            const y = height - barHeight - labelMargin;
+
+            // Draw bar
+            ctx.fillStyle = item.color || colors.accent;
+            ctx.fillRect(x, y, barWidth, barHeight);
+            
+            // Draw value label
+            ctx.fillStyle = colors.heading;
+            ctx.fillText(item.value + (item.unit || ''), x + barWidth / 2, y - 10);
+            
+            // Draw item label
+            ctx.fillStyle = colors.text;
+            ctx.fillText(item.label, x + barWidth / 2, height - 5);
+        });
+    }
+
+    // Chart 1: Trustworthy Profile
+    const trustworthyCtx = document.getElementById('trustworthyProfileChart').getContext('2d');
+    const trustworthyData = [
+        { label: 'Star Rating', value: 4, unit: '+ Stars', color: colors.accent },
+        { label: 'Total Reviews', value: 60, unit: ' Reviews', color: '#6ca6ff' }, // Lighter blue
+        { label: 'Recency', value: 90, unit: ' Days', color: '#99c0ff' }, // Even lighter blue
+        { label: 'Photos', value: 51, unit: '% Impact', color: '#c2d9ff' }, // Lightest blue
+        { label: 'Responses', value: 88, unit: '% Impact', color: '#e0ebff' } // Pale blue
+    ];
+    drawBarChart(trustworthyCtx, trustworthyData, { width: 1160, height: 400, barWidth: 150, gap: 80, labelMargin: 30 });
+    
+    // Chart 2: Conversion Uplift
+    const conversionCtx = document.getElementById('conversionUpliftChart').getContext('2d');
+    const conversionData = [
+        { label: '0 Reviews', value: 1, color: '#e0ebff' },
+        { label: '5 Reviews', value: 2.7, color: colors.accent }
+    ];
+    conversionCtx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+    conversionData.forEach((item, i) => {
+        const barHeight = item.value * 100;
+        const x = i * 150 + 80;
+        const y = 350 - barHeight;
+        conversionCtx.fillStyle = item.color;
+        conversionCtx.fillRect(x, y, 100, barHeight);
+        conversionCtx.fillStyle = colors.heading;
+        conversionCtx.textAlign = 'center';
+        conversionCtx.fillText(`${item.value * 100}%`, x + 50, y - 10);
+        conversionCtx.fillStyle = colors.text;
+        conversionCtx.fillText(item.label, x + 50, 370);
+    });
+    conversionCtx.fillStyle = colors.text;
+    conversionCtx.textAlign = 'center';
+    conversionCtx.font = 'bold 18px ' + getComputedStyle(document.body).fontFamily;
+    conversionCtx.fillText('Purchase Probability Increase', 250, 40);
+
+    // Chart 3: Psychology
+    const psychCtx = document.getElementById('psychologyChart').getContext('2d');
+    function drawPsychology() {
+        psychCtx.clearRect(0, 0, 500, 400);
+        
+        // Social Proof Side
+        psychCtx.fillStyle = colors.accent;
+        psychCtx.beginPath();
+        psychCtx.arc(125, 200, 100, 0, 2 * Math.PI);
+        psychCtx.fill();
+        psychCtx.fillStyle = colors.bg;
+        psychCtx.font = 'bold 20px ' + getComputedStyle(document.body).fontFamily;
+        psychCtx.textAlign = 'center';
+        psychCtx.fillText('Social Proof', 125, 195);
+        psychCtx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+        psychCtx.fillText('Following the crowd', 125, 225);
+
+        // Reciprocity Side
+        psychCtx.fillStyle = '#6ca6ff';
+        psychCtx.beginPath();
+        psychCtx.arc(375, 200, 100, 0, 2 * Math.PI);
+        psychCtx.fill();
+        psychCtx.fillStyle = colors.bg;
+        psychCtx.font = 'bold 20px ' + getComputedStyle(document.body).fontFamily;
+        psychCtx.textAlign = 'center';
+        psychCtx.fillText('Reciprocity', 375, 195);
+         psychCtx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+        psychCtx.fillText('Returning a favor', 375, 225);
+
+        // Arrow
+        psychCtx.strokeStyle = colors.heading;
+        psychCtx.lineWidth = 5;
+        psychCtx.beginPath();
+        psychCtx.moveTo(235, 200);
+        psychCtx.lineTo(265, 200);
+        psychCtx.stroke();
+    }
+    drawPsychology();
+    
+    // Chart 4: Response Impact
+    const impactCtx = document.getElementById('responseImpactChart').getContext('2d');
+    const impactData = [
+        { label: 'Likely to use biz that responds', value: 88, color: colors.accent },
+        { label: 'Unlikely to use biz that is silent', value: 57, color: '#ff6347' } // Tomato color for negative stat
+    ];
+    impactCtx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+    impactData.forEach((item, i) => {
+        const radius = item.value;
+        const x = i * 250 + 125;
+        const y = 200;
+
+        impactCtx.beginPath();
+        impactCtx.arc(x, y, radius, 0, 2 * Math.PI);
+        impactCtx.fillStyle = item.color;
+        impactCtx.fill();
+        
+        impactCtx.fillStyle = colors.bg;
+        impactCtx.textAlign = 'center';
+        impactCtx.font = 'bold 30px ' + getComputedStyle(document.body).fontFamily;
+        impactCtx.fillText(item.value + '%', x, y + 10);
+        
+        impactCtx.fillStyle = colors.text;
+        impactCtx.font = '14px ' + getComputedStyle(document.body).fontFamily;
+        const labelLines = item.label.split(' ');
+        let lineY = y + 140;
+        labelLines.forEach(line => {
+             impactCtx.fillText(line, x, lineY);
+             lineY += 18;
+        });
+    });
+});
+</script>
+
+</body>
+</html>
